@@ -14,10 +14,23 @@ use App\Entity\Category;
 use App\Entity\Tag;
 use App\Entity\Media;
 use DateTime;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
 
 class PostController extends AbstractController
 {
     /**
+     * Show single post
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Post found; returns post object"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Post not found"
+     * )
+     *
      * @Route("/api/post/{postId}", name="api_post_show", methods={"GET"})
      * @param $postId
      * @return Response
@@ -27,12 +40,20 @@ class PostController extends AbstractController
         $repository = $this->getDoctrine()->getRepository(Post::class);
         $post = $repository->find($postId);
 
+        if (!$post) {
+            return new JsonResponse([
+                "message" => "Post not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         $serializer = SerializerBuilder::create()->build();
         $postArray = $serializer->toArray($post);
         return new JsonResponse($postArray);
     }
 
     /**
+     * List all posts
+     *
      * @Route("/api/post", name="api_post_list", methods={"GET"})
      * @return Response
      */
@@ -47,14 +68,104 @@ class PostController extends AbstractController
     }
 
     /**
+     * Create post
+     *
      * @Route("/api/post", name="api_post_create", methods={"POST"})
-     * @Route("/api/post/{postId}", name="api_post_update", methods={"PUT"})
+     * @Security(name="Bearer")
+     *
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     description="Post object",
+     *     required=true,
+     *     @SWG\Schema(
+     *        type="object",
+     *        @SWG\Property(property="title", type="string", example="Post title"),
+     *        @SWG\Property(property="content", type="string", example="Lorem ipsum dolor..."),
+     *        @SWG\Property(property="image", type="integer", example=32),
+     *        @SWG\Property(property="categories", type="array", @SWG\Items(
+     *          type="integer",
+     *          example=3
+     *        )),
+     *        @SWG\Property(property="tags", type="array", @SWG\Items(
+     *          type="string",
+     *          example="my tag"
+     *        ))
+     *     )
+     * )
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns array with message and created object"
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Invalid data, post was not created"
+     * )
+     *
      * @param Request $request
-     * @param $postId
      * @param ValidatorInterface $validator
      * @return Response
      */
-    public function upsert(Request $request, ValidatorInterface $validator, $postId = null)
+    public function create(Request $request, ValidatorInterface $validator)
+    {
+        return $this->upsert($request, $validator);
+    }
+
+    /**
+     * Update post
+     *
+     * @Route("/api/post/{postId}", name="api_post_update", methods={"PUT"})
+     * @Security(name="Bearer")
+     *
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     description="Post object",
+     *     required=true,
+     *     @SWG\Schema(
+     *        type="object",
+     *        @SWG\Property(property="title", type="string", example="Post title"),
+     *        @SWG\Property(property="content", type="string", example="Lorem ipsum dolor..."),
+     *        @SWG\Property(property="image", type="integer", example=32),
+     *        @SWG\Property(property="categories", type="array", @SWG\Items(
+     *          type="integer",
+     *          example=3
+     *        )),
+     *        @SWG\Property(property="tags", type="array", @SWG\Items(
+     *          type="string",
+     *          example="my tag"
+     *        ))
+     *     )
+     * )
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns array with message and updated object"
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Invalid data, post was not updated"
+     * )
+     *
+     *
+     * @param Request $request
+     * @param ValidatorInterface $validator
+     * @param null $postId
+     * @return Response
+     */
+    public function update(Request $request, ValidatorInterface $validator, $postId = null)
+    {
+        return $this->upsert($request, $validator, $postId);
+    }
+
+    /**
+     * @param Request $request
+     * @param ValidatorInterface $validator
+     * @param $postId
+     * @return Response
+     */
+    private function upsert(Request $request, ValidatorInterface $validator, $postId = null)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $repository = $this->getDoctrine()->getRepository(Post::class);
@@ -147,7 +258,20 @@ class PostController extends AbstractController
     }
 
     /**
+     * Delete post
+     *
      * @Route("/api/post/{postId}", name="api_post_delete", methods={"DELETE"})
+     * @Security(name="Bearer")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Post removed"
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Post not found"
+     * )
+     *
      * @param $postId
      * @return Response
      */

@@ -11,10 +11,23 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use JMS\Serializer\SerializerBuilder;
 use App\Entity\Media;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
 
 class MediaController extends AbstractController
 {
     /**
+     * Show single media object
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Media found; returns media object"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Media not found"
+     * )
+     *
      * @Route("/api/media/{mediaId}", name="api_media_show", methods={"GET"})
      * @param $mediaId
      * @return Response
@@ -24,12 +37,20 @@ class MediaController extends AbstractController
         $repository = $this->getDoctrine()->getRepository(Media::class);
         $media = $repository->find($mediaId);
 
+        if (!$media) {
+            return new JsonResponse([
+                "message" => "Media not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         $serializer = SerializerBuilder::create()->build();
         $mediaArray = $serializer->toArray($media);
         return new JsonResponse($mediaArray);
     }
 
     /**
+     * Show all media objects
+     *
      * @Route("/api/media", name="api_media_list", methods={"GET"})
      * @return Response
      */
@@ -44,7 +65,28 @@ class MediaController extends AbstractController
     }
 
     /**
+     * Create new media from file
+     *
      * @Route("/api/media", name="api_media_create", methods={"POST"})
+     *
+     * @Security(name="Bearer")
+     *
+     * @swg\Parameter(
+     *     name="BinaryData",
+     *     in="body",
+     *     required=true,
+     *     @swg\Schema(type="string", format="byte")
+     * )
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Media object successfully created"
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Can not create media object"
+     * )
+     *
      * @param Request $request
      * @param ValidatorInterface $validator
      * @return Response
@@ -86,7 +128,21 @@ class MediaController extends AbstractController
     }
 
     /**
+     * Delete media object
+     *
      * @Route("/api/media/{mediaId}", name="api_media_delete", methods={"DELETE"})
+     *
+     * @Security(name="Bearer")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Media removed"
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Media not found"
+     * )
+     *
      * @param $mediaId
      * @return Response
      */
