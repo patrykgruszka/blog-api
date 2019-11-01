@@ -1,18 +1,50 @@
 nelmio_api_doc:
-    documentation:
-        info:
-            title: Blog
-            description:
-            version: 1.0.0
-        securityDefinitions:
-            Bearer:
-                type: apiKey
-                description: 'Value: Bearer {jwt}'
-                name: Authorization
-                in: header
-        security:
-            - Bearer: []
-    areas: # to filter documented areas
-        path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
-
+  documentation:
+    info:
+      title: Blog API
+      description: Blog API
+      version: 1.0.0
+    securityDefinitions:
+      Bearer:
+        type: apiKey
+        description: 'Value: Bearer {jwt}'
+        name: Authorization
+        in: header
+    security:
+      -
+        Bearer: []
+    paths:
+      /api/login_check:
+        post:
+          tags:
+            - Login
+          description: 'User authentication'
+          produces:
+            - application/json
+          parameters:
+            -
+              name: user
+              description: 'User name'
+              in: body
+              required: true
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+          responses:
+            '200':
+              description: 'Login successful'
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+            '401':
+              description: Unauthorized
+  areas:
+    path_patterns:
+      - ^/api/login_check
+      - '^/api(?!/doc*)'
