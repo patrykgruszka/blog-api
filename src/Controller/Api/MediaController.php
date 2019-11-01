@@ -65,18 +65,11 @@ class MediaController extends AbstractController
     }
 
     /**
-     * Create new media from file
+     * Create new media from file (requires binary data)
      *
      * @Route("/api/media", name="api_media_create", methods={"POST"})
      *
      * @Security(name="Bearer")
-     *
-     * @swg\Parameter(
-     *     name="BinaryData",
-     *     in="body",
-     *     required=true,
-     *     @swg\Schema(type="string", format="byte")
-     * )
      *
      * @SWG\Response(
      *     response=200,
@@ -93,8 +86,14 @@ class MediaController extends AbstractController
      */
     public function create(Request $request, ValidatorInterface $validator)
     {
-
         $content = $request->getContent();
+
+        if (empty($content)) {
+            return new JsonResponse([
+                "error" => "Binary data is required"
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $fileData = $this->uploadFile($content);
 
         if (isset($fileData['error'])) {
