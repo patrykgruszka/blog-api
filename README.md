@@ -18,9 +18,6 @@ Blog features:
 ### Install packages ##
 `composer install`
 
-### Checking for Security Vulnerabilities ###
-`composer require sensiolabs/security-checker --dev`
-
 ### Generate JWT keys ###
 ````
 cd config/jwt
@@ -28,6 +25,7 @@ ssh-keygen -t rsa -b 4096 -m PEM -f jwt.key
 # don't add passphrase
 openssl rsa -in jwt.key -pubout -outform PEM -out jwt.key.pub
 ````
+
 ### Configure database connection ###
 Copy `.env.dist` file and rename it to `.env`. Open file, find and edit line that is responsible for database connection:  
 `DATABASE_URL=mysql://user:password@host:3306/databasename`
@@ -54,7 +52,7 @@ Full API documentation is available at `http://localhost:8000/api/doc`
 ### User authentication ###
 Blog API uses token authentication, send request to obtain token:
 ````
-curl -X POST http://localhost:8000/api/login_check -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -d '{"username":"admin","password":"H9Lb9xeqIL470V8"}'
+curl -X POST http://localhost:8000/api/login_check -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -d '{"username":"admin","password":"lajka1"}'
 ````
 This request returns API token that is valid for 1 hour. Put the token in the request headers (see authenticated user requests).
 

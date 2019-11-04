@@ -7,7 +7,8 @@
 ###< symfony/framework-bundle ###
 
 ###> lexik/jwt-authentication-bundle ###
-/config/jwt/*.*
+/config/jwt/*.key
+/config/jwt/*.key.pub
 ###< lexik/jwt-authentication-bundle ###
 
 ###> symfony/web-server-bundle ###

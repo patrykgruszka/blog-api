@@ -224,6 +224,9 @@
     "symfony/event-dispatcher": {
         "version": "v4.1.4"
     },
+    "symfony/expression-language": {
+        "version": "v4.1.12"
+    },
     "symfony/filesystem": {
         "version": "v4.1.4"
     },
@@ -238,6 +241,9 @@
             "version": "1.0",
             "ref": "e921bdbfe20cdefa3b82f379d1cd36df1bc8d115"
         }
+    },
+    "symfony/form": {
+        "version": "v4.1.12"
     },
     "symfony/framework-bundle": {
         "version": "3.3",
@@ -257,6 +263,9 @@
     "symfony/inflector": {
         "version": "v4.1.4"
     },
+    "symfony/intl": {
+        "version": "v4.1.12"
+    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -271,6 +280,9 @@
     },
     "symfony/orm-pack": {
         "version": "v1.0.5"
+    },
+    "symfony/polyfill-intl-icu": {
+        "version": "v1.12.0"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.9.0"
