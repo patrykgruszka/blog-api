@@ -96,12 +96,16 @@ class PostController extends AbstractController
      * )
      *
      * @SWG\Response(
-     *     response=200,
-     *     description="Returns array with message and created object"
+     *     response=201,
+     *     description="Post created, returns array with message and created object"
      * )
      * @SWG\Response(
      *     response=400,
      *     description="Invalid data, post was not created"
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
      * )
      *
      * @param Request $request
@@ -148,6 +152,14 @@ class PostController extends AbstractController
      * @SWG\Response(
      *     response=400,
      *     description="Invalid data, post was not updated"
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Post not found"
      * )
      *
      *
@@ -199,9 +211,9 @@ class PostController extends AbstractController
             $media = $mediaRepository->find($mediaId);
             if (empty($media)) {
                 $response = [
-                    "message" => "Media not found: $mediaId"
+                    "message" => "Media does not exist: $mediaId"
                 ];
-                return new JsonResponse($response, Response::HTTP_NOT_FOUND);
+                return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
             }
             $post->setImage($media);
         }
@@ -214,9 +226,9 @@ class PostController extends AbstractController
 
             if (empty($category)) {
                 $response = [
-                    "message" => "Category not found: $categoryId"
+                    "message" => "Category does not exist: $categoryId"
                 ];
-                return new JsonResponse($response, Response::HTTP_NOT_FOUND);
+                return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
             }
 
             $post->addCategory($category);
@@ -255,7 +267,7 @@ class PostController extends AbstractController
         return new JsonResponse([
             "message" => $postId ? "Post updated" : "Post created",
             "result" => $postArray
-        ],Response::HTTP_OK);
+        ],$postId ? Response::HTTP_OK : Response::HTTP_CREATED);
     }
 
     /**
@@ -269,7 +281,11 @@ class PostController extends AbstractController
      *     description="Post removed"
      * )
      * @SWG\Response(
-     *     response=400,
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=404,
      *     description="Post not found"
      * )
      *

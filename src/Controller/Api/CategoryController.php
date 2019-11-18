@@ -86,17 +86,20 @@ class CategoryController extends AbstractController
      * )
      *
      * @SWG\Response(
-     *     response=200,
-     *     description="Returns array with message and created object"
+     *     response=201,
+     *     description="Category created, returns array with message and created object"
      * )
      * @SWG\Response(
      *     response=400,
      *     description="Invalid data, category was not created"
      * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
+     * )
      *
      * @param Request $request
      * @param ValidatorInterface $validator
-     * @param null $categoryId
      * @return JsonResponse
      */
     public function create(Request $request, ValidatorInterface $validator)
@@ -129,7 +132,15 @@ class CategoryController extends AbstractController
      * )
      * @SWG\Response(
      *     response=400,
-     *     description="Invalid data or category not found"
+     *     description="Invalid data"
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Category not found"
      * )
      *
      * @param Request $request
@@ -154,7 +165,7 @@ class CategoryController extends AbstractController
                 $response = [
                     "message" => "Category not found"
                 ];
-                return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+                return new JsonResponse($response, Response::HTTP_NOT_FOUND);
             }
         } else {
             $category = new Category();
@@ -182,7 +193,7 @@ class CategoryController extends AbstractController
         return new JsonResponse([
             "message" => $categoryId ? "Category updated" : "Category created",
             "result" => $categoryArray
-        ],Response::HTTP_OK);
+        ],$categoryId ? Response::HTTP_OK : Response::HTTP_CREATED);
     }
 
     /**
@@ -196,7 +207,11 @@ class CategoryController extends AbstractController
      *     description="Category removed"
      * )
      * @SWG\Response(
-     *     response=400,
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=404,
      *     description="Category not found"
      * )
      *
@@ -213,7 +228,7 @@ class CategoryController extends AbstractController
             $response = [
                 "message" => "Category not found"
             ];
-            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+            return new JsonResponse($response, Response::HTTP_NOT_FOUND);
         }
 
         $em=$this->getDoctrine()->getManager();

@@ -72,12 +72,16 @@ class MediaController extends AbstractController
      * @Security(name="Bearer")
      *
      * @SWG\Response(
-     *     response=200,
+     *     response=201,
      *     description="Media object successfully created"
      * )
      * @SWG\Response(
      *     response=400,
-     *     description="Can not create media object"
+     *     description="Cannot create media object"
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized"
      * )
      *
      * @param Request $request
@@ -138,7 +142,11 @@ class MediaController extends AbstractController
      *     description="Media removed"
      * )
      * @SWG\Response(
-     *     response=400,
+     *     response=401,
+     *     description="Unauthorized"
+     * )
+     * @SWG\Response(
+     *     response=404,
      *     description="Media not found"
      * )
      *
