@@ -86,7 +86,7 @@ curl -X GET "http://localhost:8000/api/post/1" -H "accept: application/json"
 curl -X POST http://localhost:8000/api/category -H 'accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Bearer {token}' -d '{"name": "new category", "description": "new category description"}'
 
 // create new post
-curl -X POST "http://localhost:8000/api/post" -H "accept: application/json" -H "Authorization: Bearer {token}" -H "Content-Type: application/json" -d "{ \"title\": \"Post title\", \"content\": \"Lorem ipsum dolor...\", \"image\": 1, \"categories\": [ 1 ], \"tags\": [ \"my tag\", \"another tag\" ]}"
+curl -X POST "http://localhost:8000/api/post" -H "accept: application/json" -H "Authorization: Bearer {token}" -H "Content-Type: application/json" -d "{ \"title\": \"Post title\", \"content\": \"Lorem ipsum dolor...\", \"categories\": [ 1 ], \"tags\": [ \"my tag\", \"another tag\" ]}"
 ````
 
 #### Uploading media ####

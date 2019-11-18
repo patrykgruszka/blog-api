@@ -16,6 +16,7 @@ use App\Entity\Media;
 use DateTime;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
+use Exception;
 
 class PostController extends AbstractController
 {
@@ -106,6 +107,7 @@ class PostController extends AbstractController
      * @param Request $request
      * @param ValidatorInterface $validator
      * @return Response
+     * @throws Exception
      */
     public function create(Request $request, ValidatorInterface $validator)
     {
@@ -153,6 +155,7 @@ class PostController extends AbstractController
      * @param ValidatorInterface $validator
      * @param null $postId
      * @return Response
+     * @throws Exception
      */
     public function update(Request $request, ValidatorInterface $validator, $postId = null)
     {
@@ -162,8 +165,9 @@ class PostController extends AbstractController
     /**
      * @param Request $request
      * @param ValidatorInterface $validator
-     * @param $postId
-     * @return Response
+     * @param null $postId
+     * @return JsonResponse
+     * @throws Exception
      */
     private function upsert(Request $request, ValidatorInterface $validator, $postId = null)
     {
@@ -241,9 +245,6 @@ class PostController extends AbstractController
                 "message" => $errorsString
             ], Response::HTTP_BAD_REQUEST);
         }
-
-        $entityManager->persist($post);
-        $entityManager->flush();
 
         $entityManager->persist($post);
         $entityManager->flush();
